@@ -11,6 +11,11 @@ class Node(object):
         self.building_type = None
         self.owner = None
 
+        #for ease
+        self.nn = self.node_neighbors
+        self.en = self.edge_neighbors
+        self.fn = self.face_neighbors
+
     def add_face(self, face):
         if face not in self.face_neighbors:
             self.face_neighbors.append(face)

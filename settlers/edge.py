@@ -10,5 +10,10 @@ class Edge(object):
         self.face_neighbors = []
         self.owner = None
 
+        #for ease
+        self.nn = self.node_neighbors
+        self.en = self.edge_neighbors
+        self.fn = self.face_neighbors
+
     def set_owner(self, player):
         self.owner = player     

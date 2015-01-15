@@ -63,7 +63,7 @@ class Board(object):
                         if type(nbr) == Node:
                             obj.add_node(nbr)
                             # if obj == Node:
-                                
+
                     # if type(obj) == Node:                        
                     #     for nbr in nbrs:
                     #         if type(nbr) == Face:

@@ -12,6 +12,11 @@ class Face(object):
         self.probability = None
         self.robber_state = False
 
+        #for ease
+        self.nn = self.node_neighbors
+        self.en = self.edge_neighbors
+        self.fn = self.face_neighbors
+
     def add_face(self, face):
         if face != self and face not in self.face_neighbors:
             self.face_neighbors.append(face)
