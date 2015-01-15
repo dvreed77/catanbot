@@ -62,16 +62,6 @@ class Board(object):
 
                         if type(nbr) == Node:
                             obj.add_node(nbr)
-                            # if obj == Node:
-
-                    # if type(obj) == Node:                        
-                    #     for nbr in nbrs:
-                    #         if type(nbr) == Face:
-                    #             obj.add_face(nbr)
-                    # elif type(obj) == Face:
-                    #     for nbr in nbrs:
-                    #         if type(nbr) == Face:
-                    #             obj.add_face(nbr)
 
         # Number of nodes in start row
         start = 3
@@ -126,81 +116,3 @@ class Board(object):
 
     def _add_face(self):
         pass
-
-# class Grid(object):
-#     def __init__(self, nrows, ncols):
-#         self.grid = np.full((nrows, ncols), -1)
-#         self.index = 0
-#         self.objs = []
-    
-#     def add_node(self, r, c):
-#         self.grid[r, c] = self.index
-#         self.objs.append(Node(r, c))
-#         self.index += 1
-
-#     def add_hex(self, r, c):
-#         if r%2:
-#             self.grid[r, c] = self.index
-#             self.grid[r+1, c] = self.index
-#             self.objs.append(Hex(r, c))
-#             self.index += 1 
-            
-#     def process_objs(self):
-#         for obj in self.objs:
-#             if type(obj) == Hex:
-#                 continue
-#             nbs = get_neighbors(obj.r, obj.c)
-#             for n in nbs:
-#                 if type(n) == Hex:
-#                     obj.add_hex(n)
-                    
-#     def get_neighbors(self, r, c):
-#         out = []
-#         for dr, dc in product([-1, 0, 1], repeat=2):
-#             if dr==0 and dc==0:
-#                 continue
-
-#             r_ = r + dr
-#             c_ = c + dc        
-
-#             if r_ < 0 or c_ < 0 or r_ >= self.grid.shape[1] or c_ >= self.grid.shape[1]:
-#                 continue
-#             idx = self.grid[r_, c_]
-#             if idx >= 0:
-#                 out.append(self.objs[int(idx)])
-
-#         return list(set(out))
-
-#     def to_table(self):
-#         out = '<table>'
-#         for r in self.grid:
-#             out += '<tr>'
-#             for c in r:            
-#                 if c < 0:
-#                     color = 'black'
-#                     label = ''
-#                 else:
-#                     obj = self.objs[int(c)]
-#                     if type(obj) == Node:
-#                         color = 'slategray'
-#                         label = obj.__repr__()
-#                     else:
-#                         color = obj.color
-#                         label = obj.__repr__()
-                        
-#                 out += '<td style="background-color: %s">%s</td>' % (color, label)
-#             out += '</tr>'
-#         out += '</table>'
-
-#         return HTML(out)
-
-# reso_ar, roll_ar = [], []
-# map(lambda x: reso_ar.extend(x['n']*[x['code']]), resources.values())
-# map(lambda x: roll_ar.extend(x[1]*[x[0]]), rolls.items())
-# shuffle(reso_ar)
-# shuffle(roll_ar)
-
-
-
-# grid.process_objs()
-# grid.to_table()
