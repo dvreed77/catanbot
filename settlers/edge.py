@@ -12,4 +12,4 @@ class Edge(object):
 		self.owner = None
 
 	def set_owner(self, player):
-		self.player = player		
+		self.owner = player		
