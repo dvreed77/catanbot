@@ -17,6 +17,7 @@ class Board(object):
         self.build_board()
 
     def build_board(self):
+        from itertools import product
         def add_node(r, c):
             node = Node()
             grid[r][c] = node
@@ -28,6 +29,49 @@ class Board(object):
                 grid[r][c] = face
                 grid[r+1][c] = face
                 self.faces.append(face)
+
+        def get_neighbors(r, c):
+            out = []
+            for dr, dc in product([-1, 0, 1], repeat=2):
+                if dr==0 and dc==0:
+                    continue
+
+                r_ = r + dr
+                c_ = c + dc        
+
+                if r_ < 0 or c_ < 0 or r_ >= nrows or c_ >= ncols:
+                    continue
+                
+                nbr = grid[r_][c_]
+                out.append(nbr)
+
+            return list(set(out))
+
+        def process_objs():
+            for r in range(nrows):
+                for c in range(ncols):
+                    obj = grid[r][c]
+
+                    if not obj:
+                        continue
+
+                    nbrs = get_neighbors(r, c)
+                    for nbr in nbrs:
+                        if type(nbr) == Face:
+                            obj.add_face(nbr)
+
+                        if type(nbr) == Node:
+                            obj.add_node(nbr)
+                            # if obj == Node:
+                                
+                    # if type(obj) == Node:                        
+                    #     for nbr in nbrs:
+                    #         if type(nbr) == Face:
+                    #             obj.add_face(nbr)
+                    # elif type(obj) == Face:
+                    #     for nbr in nbrs:
+                    #         if type(nbr) == Face:
+                    #             obj.add_face(nbr)
 
         # Number of nodes in start row
         start = 3
@@ -73,6 +117,9 @@ class Board(object):
                 if (index_switch%2 == 0):            
                     start_index -= 1
                 index_switch += 1
+
+        # once board is filled, reiterate to process connections
+        process_objs()
 
     def _add_node(self):
         pass
