@@ -72,11 +72,8 @@ class Board(object):
         nrows = 4*(middle - start)
         ncols = 2*middle - 1
 
-        # grid = Grid(nrows, ncols)
-
-        # grid = np.full((nrows, ncols), -1)
         grid = [[None]*ncols for _ in range(nrows)]
-        # print nrows, ncols, grid
+        
         # index to start drawing nodes
         start_index = middle - start
 
@@ -110,9 +107,3 @@ class Board(object):
 
         # once board is filled, reiterate to process connections
         process_objs()
-
-    def _add_node(self):
-        pass
-
-    def _add_face(self):
-        pass
