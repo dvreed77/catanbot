@@ -6,9 +6,10 @@ from settlers.node import Node
 class Board(object):
     """docstring for Board"""
     def __init__(self):
-        super(Board, self).__init__()
-
         # TODO: replace with real code
+        Face.id_ = 0
+        Node.id_ = 0
+
         self.nodes = []
         self.edges = []
         self.faces = []
@@ -40,8 +41,8 @@ class Board(object):
         # grid = Grid(nrows, ncols)
 
         # grid = np.full((nrows, ncols), -1)
-        grid = [[]*ncols for _ in range(nrows)]
-
+        grid = [[None]*ncols for _ in range(nrows)]
+        # print nrows, ncols, grid
         # index to start drawing nodes
         start_index = middle - start
 

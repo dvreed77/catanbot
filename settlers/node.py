@@ -2,7 +2,6 @@ class Node(object):
     """docstring for Node"""
     id_ = 0
     def __init__(self):
-        super(Node, self).__init__()
         self.id = Node.id_
         Node.id_ += 1
 
@@ -16,4 +15,7 @@ class Node(object):
         self.building_type = building_type
 
     def set_owner(self, player):
-        self.owner = player     
+        self.owner = player
+
+    def __repr__(self):
+        return "<Node: %s>" % self.id    

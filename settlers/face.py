@@ -2,7 +2,6 @@ class Face(object):
     """docstring for Face"""
     id_ = 0
     def __init__(self):
-        super(Face, self).__init__()
         self.id = Face.id_
         Face.id_ += 1
 
@@ -14,4 +13,7 @@ class Face(object):
         self.robber_state = False
 
     def set_robber(self, state):
-        self.robber = state     
+        self.robber = state
+
+    def __repr__(self):
+        return "<Face: %s>" % self.id    
