@@ -1,7 +1,7 @@
 class Edge(object):
     """docstring for Edge"""
     id_ = 0
-    def __init__(self, arg):
+    def __init__(self):
         super(Edge, self).__init__()
         self.id = Edge.id_
         Edge.id_ += 1

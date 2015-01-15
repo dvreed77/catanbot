@@ -1,7 +1,7 @@
 class Face(object):
     """docstring for Face"""
     id_ = 0
-    def __init__(self, arg):
+    def __init__(self):
         super(Face, self).__init__()
         self.id = Face.id_
         Face.id_ += 1

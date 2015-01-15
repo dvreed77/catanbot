@@ -1,7 +1,7 @@
 class Node(object):
     """docstring for Node"""
     id_ = 0
-    def __init__(self, arg):
+    def __init__(self):
         super(Node, self).__init__()
         self.id = Node.id_
         Node.id_ += 1
