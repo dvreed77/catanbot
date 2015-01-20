@@ -1,10 +1,13 @@
+from inventory import Inventory
 
 class Player(object):
+    """Docstring HELP HOW DOES IT WORK"""
 
-    _id = 0
+    def __init__(self, name, color, _id):
 
-    def __init__(self, name, color):
-        self.name  = name
-        self.color = color
-        self.id    = Player._id
-        Player._id += 1
+        self.id         = _id
+        self.color      = color
+        self.inventory  = Inventory()
+
+        if name == None:
+            self.name  = 'Player ' + str(self.id)

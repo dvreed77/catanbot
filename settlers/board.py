@@ -1,6 +1,6 @@
-from settlers.edge import Edge 
-from settlers.face import Face 
-from settlers.node import Node 
+from edge import Edge 
+from face import Face 
+from node import Node 
 
 
 class Board(object):
