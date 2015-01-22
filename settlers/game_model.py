@@ -3,8 +3,10 @@ from player import Player
 
 import random
 
+print 'dace'
 class GameModel(object):
     """Docstring"""
+
     class GameMode:
         """Enumeration for keeping track of the game mode"""
         SETUP = 0
@@ -66,7 +68,7 @@ class GameModel(object):
             self.active_player = 1
         return self.active_player
 
-    def build_road(self, player_id, position):
+    def build_road(self, player_id, edge_id):
         """
         Builds a road for the specified player at the specified position. 
         Returns true if successful, false if not
@@ -83,17 +85,35 @@ class GameModel(object):
         #   put a road on the board at position
         #   result = True
         # return result
+        if player_id != self.active_player:
+            return False
 
-        pass
+        edge = self.board.get_edge(edge_id)
+        nns = edge.get_node_neighbors()
+        ens = edge.get_edge_neighbors()
+        can_buy = False
 
-    def build_settlement(self, player_id, position):
+        if not edge.get_owner():
+            for n in nns.extend(ens):
+                pid = n.get_owner()
+                if pid == player_id:
+                    can_buy = True                
+                    break
+
+        if can_buy:
+            self.board.place_road(edge_id, player_id)
+            return True
+        else:
+            return False
+
+    def build_settlement(self, player_id, node_id):
         """
         Builds a settlement for the specified player at the specified position. 
         Returns true if successful, false if not
 
         Arguments:
         player_id      -- the player number to build the road for
-        position    -- the position of the settlement (a vertex)
+        node_id    -- the position of the settlement (a vertex)
         """
 
         # Psuedocode
@@ -104,5 +124,23 @@ class GameModel(object):
         #   put a settlement on the board at position
         #   result = True
         # return result
+        # STOP
+        result = False
+        
+        if player_id == self.active_player:
+            node = self.board.get_node(node_id)
+            can_place = False
+            if not node.get_owner():
+                has_a_neighbor = False
+                for n in node.get_node_neighbors():
+                    if n.get_owner():
+                        has_a_neighbor = True
+                        break
+                if not has_a_neighbor:
+                    can_place = True
 
-        pass
+            if can_place:
+                self.board.place_settlement(node_id, player_id)
+                result = True
+
+        return result

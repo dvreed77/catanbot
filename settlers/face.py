@@ -28,5 +28,14 @@ class Face(object):
     def set_robber(self, state):
         self.robber = state
 
+    def get_node_neighbors(self):
+        return self.node_neighbors
+
+    def get_edge_neighbors(self):
+        return self.edge_neighbors
+
+    def get_face_neighbors(self):
+        return self.face_neighbors
+
     def __repr__(self):
         return "<Face: %s>" % self.id    

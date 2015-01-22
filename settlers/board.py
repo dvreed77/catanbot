@@ -14,9 +14,24 @@ class Board(object):
         self.edges = []
         self.faces = []
 
-        self.build_board()
+        self._build_board()
 
-    def build_board(self):
+    def get_node(self, node_id):
+        return self.nodes[node_id]
+
+    def get_edge(self, edge_id):
+        return self.edges[edge_id]
+
+    def get_face(self, face_id):
+        return self.faces[face_id]
+
+    def place_road(self, edge_id, player_id):
+        self.edges[edge_id].set_owner(player_id)
+
+    def place_settlement(self, node_id, player_id):
+        self.nodes[node_id].set_owner(player_id)
+
+    def _build_board(self):
         from itertools import product
         def add_node(r, c):
             node = Node()

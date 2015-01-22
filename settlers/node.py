@@ -30,5 +30,17 @@ class Node(object):
     def set_owner(self, player):
         self.owner = player
 
+    def get_owner(self):
+        return self.owner
+
+    def get_node_neighbors(self):
+        return self.node_neighbors
+
+    def get_edge_neighbors(self):
+        return self.edge_neighbors
+
+    def get_face_neighbors(self):
+        return self.face_neighbors
+
     def __repr__(self):
         return "<Node: %s>" % self.id    
