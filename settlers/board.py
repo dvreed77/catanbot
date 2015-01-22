@@ -16,6 +16,50 @@ class Board(object):
 
         self._build_board()
 
+    def build_board2(self):
+        def get_nodes(u, v):
+            # 0=LEFT, 1=RIGHT
+            return [
+            [u, v, 0], [u, v, 1],
+            [u+1, v, 0], [u-1, v, 1],
+            [u+1, v-1, 0], [u-1, v+1, 1],
+            ]
+
+        def get_edges(u, v):
+            # 0=WEST, 1=NORTH, 2=EAST
+            return [
+            [u, v, 0], [u, v, 1], [u, v, 2],
+            [u+1, v-1, 0], [u, v-1, 1], [u-1, v, 2],
+            ]
+
+        def get_faces(u, v):
+            return [
+            [u-1, v], [u+1, v],
+            [u, v-1], [u, v+1],
+            [u-1, v+1], [u+1, v-1]
+            ]
+
+
+        start = 4
+        mid = 7
+
+        total = 2*(mid - start) + 1
+        offset = 0
+        for c in range(total):
+            n_nodes = start - offset
+            for r in range(n_nodes):
+                if (c > 0) and (c < total-1) and (r > 0) and (r < n_nodes-1):
+                    # print c, r+offset
+                    pass
+
+
+
+            if c > (total/2 - 1):
+                offset += 1
+            else:
+                offset -= 1
+
+    def build_board(self):
     def get_node(self, node_id):
         return self.nodes[node_id]
 
