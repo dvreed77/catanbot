@@ -2,6 +2,7 @@ from settlers.edge import Edge
 from settlers.face import Face
 from settlers.node import Node
 
+print 'dave'
 class HexBoard(object):
     def __init__(self):
         self.cols = {
