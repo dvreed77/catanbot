@@ -29,3 +29,6 @@ class Edge(object):
 
     def get_face_neighbors(self):
         return self.face_neighbors
+
+    def __repr__(self):
+        return "<Edge: %s>" % self.id

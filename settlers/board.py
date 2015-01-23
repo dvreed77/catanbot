@@ -1,7 +1,29 @@
-from edge import Edge 
-from face import Face 
-from node import Node 
+from settlers.edge import Edge
+from settlers.face import Face
+from settlers.node import Node
 
+class HexBoard(object):
+    def __init__(self):
+        self.cols = {
+            -3: [0, 3],
+            -2: [-1, 3],
+            -1: [-2, 3],
+            0: [-3, 3],
+            1: [-3, 2],
+            2: [-3, 1],
+            3: [-3, 0]
+        }
+        self.u_min = -3
+        self.u_max = 3
+
+    def get_face(self, u, v):
+        if (u < self.u_min) or (u > self.u_max):
+            return None
+
+        if (v < self.cols[u][0]) or (v > self.cols[u][1]):
+            return None
+
+        return 'Face'
 
 class Board(object):
     """docstring for Board"""
@@ -14,52 +36,188 @@ class Board(object):
         self.edges = []
         self.faces = []
 
-        self._build_board()
+        self.build_board2()
 
     def build_board2(self):
-        def get_nodes(u, v):
-            # 0=LEFT, 1=RIGHT
+        def get_nodes_from_face(u, v):
             return [
-            [u, v, 0], [u, v, 1],
-            [u+1, v, 0], [u-1, v, 1],
-            [u+1, v-1, 0], [u-1, v+1, 1],
+                out[u][v]['L'], out[u][v]['R'],
+                out[u+1][v]['L'], out[u-1][v]['R'],
+                out[u+1][v-1]['L'], out[u-1][v+1]['R']
             ]
 
-        def get_edges(u, v):
-            # 0=WEST, 1=NORTH, 2=EAST
+        def get_edges_from_face(u, v):
             return [
-            [u, v, 0], [u, v, 1], [u, v, 2],
-            [u+1, v-1, 0], [u, v-1, 1], [u-1, v, 2],
+                out[u][v]['W'], out[u][v]['N'], out[u][v]['E'],
+                out[u+1][v-1]['W'], out[u][v-1]['N'], out[u-1][v]['E'],
             ]
 
-        def get_faces(u, v):
+        def get_faces_from_face(u, v):
             return [
-            [u-1, v], [u+1, v],
-            [u, v-1], [u, v+1],
-            [u-1, v+1], [u+1, v-1]
+                out[u-1][v]['F'], out[u+1][v]['F'],
+                out[u][v-1]['F'], out[u][v+1]['F'],
+                out[u-1][v+1]['F'], out[u+1][v-1]['F']
             ]
-
-
-        start = 4
-        mid = 7
-
-        total = 2*(mid - start) + 1
-        offset = 0
-        for c in range(total):
-            n_nodes = start - offset
-            for r in range(n_nodes):
-                if (c > 0) and (c < total-1) and (r > 0) and (r < n_nodes-1):
-                    # print c, r+offset
-                    pass
-
-
-
-            if c > (total/2 - 1):
-                offset += 1
+        def get_nodes_from_node(u, v, lr):
+            if lr == 'R':
+                return [
+                    out[u+1][v]['L'],
+                    out[u+1][v-1]['L'],
+                    out[u+2][v-1]['R'],
+                ]
             else:
-                offset -= 1
+                return [
+                    out[u-1][v]['R'],
+                    out[u-1][v+1]['R'],
+                    out[u-2][v+1]['L'],
+                ]
 
-    def build_board(self):
+        def get_edges_from_node(u, v, lr):
+            if lr == 'R':
+                return [
+                    out[u][v]['E'],
+                    out[u+1][v-1]['W'],
+                    out[u+1][v-1]['N'],
+                ]
+            else:
+                return [
+                    out[u-1][v]['E'],
+                    out[u-1][v]['N'],
+                    out[u][v]['W'],
+                ]
+
+        def get_faces_from_node(u, v, lr):
+            if lr == 'R':
+                return [
+                    out[u][v]['F'],
+                    out[u+1][v]['F'],
+                    out[u+1][v-1]['F'],
+                ]
+            else:
+                return [
+                    out[u][v]['F'],
+                    out[u-1][v]['F'],
+                    out[u-1][v+1]['F'],
+                ]
+        def get_nodes_from_edge(u, v, wne):
+            if wne == 'W':
+                return [
+                    out[u][v]['L'],
+                    out[u-1][u+1]['R'],
+                ]
+            elif wne == 'N':
+                return [
+                    out[u+1][v]['L'],
+                    out[u-1][v+1]['R'],
+                ]
+            else:
+                return [
+                    out[u+1][v]['L'],
+                    out[u][v]['R'],
+                ]
+
+        def get_edges_from_edge(u, v, wne):
+            if wne == 'W':
+                return [
+                    out[u-1][v]['N'],
+                    out[u-1][v]['E'],
+                    out[u][v]['N'],
+                    out[u-1][v+1]['E'],
+                ]
+            elif wne == 'N':
+                return [
+                    out[u][v]['W'],
+                    out[u][v]['E'],
+                    out[u-1][v+1]['E'],
+                    out[u+1][v]['W'],
+                ]
+            else:
+                return [
+                    out[u][v]['N'],
+                    out[u+1][v]['W'],
+                    out[u+1][v-1]['N'],
+                    out[u+1][v-1]['W'],
+                ]
+
+        def get_faces_from_edge(u, v, wne):
+            if wne == 'W':
+                return [
+                    out[u][v]['F'],
+                    out[u-1][v+1]['F'],
+                ]
+            elif wne == 'N':
+                return [
+                    out[u][v]['F'],
+                    out[u][v+1]['F'],
+                ]
+            else:
+                return [
+                    out[u][v]['F'],
+                    out[u+1][v]['F'],
+                ]
+
+
+        start = -3
+        n_rows = 4
+        offset = 0
+        columns = range(start, -start+1)
+        n_cols = len(columns)
+
+        out = {}
+        for c in columns:
+            out[c] = {}
+            # print c <= columns[n_cols/2]
+            if c <= columns[n_cols/2]:
+                n_rows += 1
+            else:
+                offset += 1
+                n_rows -= 1
+
+            rows = range(start+offset, start+n_rows+offset-1)
+            # print rows
+            for r in rows:
+                # print c,
+                out[c][-r] = {
+                    'F': Face(),
+                    'L': Node(),
+                    'R': Node(),
+                    'W': Edge(),
+                    'N': Edge(),
+                    'E': Edge()
+                }
+
+        print get_nodes_from_edge(0, 0, 'N')
+        print get_edges_from_edge(0, 0, 'N')
+        print get_faces_from_edge(0, 0, 'N')
+        print '----'
+        print get_nodes_from_face(0, 0)
+        print get_edges_from_face(0, 0)
+        print get_faces_from_face(0, 0)
+        print '----'
+        print get_nodes_from_node(0, 0, 'L')
+        print get_edges_from_node(0, 0, 'L')
+        print get_faces_from_node(0, 0, 'L')
+        # print get_edges(0,0)
+        # print get_faces(0,0)
+        # print out
+        # mid = 7
+        #
+        # total = 2*(mid - start) + 1
+        # offset = 0
+        # for c in range(total):
+        #     n_nodes = start - offset
+        #     for r in range(n_nodes):
+        #         if (c > 0) and (c < total-1) and (r > 0) and (r < n_nodes-1):
+        #             # print c, r+offset
+        #             pass
+        #
+        #
+        #
+        #     if c > (total/2 - 1):
+        #         offset += 1
+        #     else:
+        #         offset -= 1
+
     def get_node(self, node_id):
         return self.nodes[node_id]
 
@@ -166,3 +324,10 @@ class Board(object):
 
         # once board is filled, reiterate to process connections
         process_objs()
+
+if __name__ == "__main__":
+    # bd = Board()
+    hb = HexBoard()
+    print hb.get_face(0,0)
+    print hb.get_face(-3,3)
+    print hb.get_face(-3,-3)
