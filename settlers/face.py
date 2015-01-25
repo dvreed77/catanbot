@@ -1,10 +1,12 @@
 class Face(object):
     """docstring for Face"""
     id_ = 0
-    def __init__(self):
+    def __init__(self, c, r):
         self.id = Face.id_
         Face.id_ += 1
 
+        self.c = c
+        self.r = r
         self.node_neighbors = []
         self.edge_neighbors = []
         self.face_neighbors = []
@@ -25,6 +27,10 @@ class Face(object):
         if node not in self.node_neighbors:
             self.node_neighbors.append(node)
 
+    def add_edge(self, edge):
+        if edge not in self.edge_neighbors:
+            self.edge_neighbors.append(edge)
+
     def set_robber(self, state):
         self.robber = state
 
@@ -38,4 +44,4 @@ class Face(object):
         return self.face_neighbors
 
     def __repr__(self):
-        return "<Face: %s>" % self.id    
+        return "<F%0i: %s,%s>" % (self.id, self.c, self.r)

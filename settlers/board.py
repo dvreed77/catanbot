@@ -1,10 +1,34 @@
+from collections import defaultdict
 from settlers.edge import Edge
 from settlers.face import Face
 from settlers.node import Node
 
-print 'dave'
+print 'dave3'
+
+
+class TriDict(object):
+    def __init__(self):
+        self.dict = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: None)))
+    def __setitem__(self, key, value):
+        self.dict[key[0]][key[1]][key[2]] = value
+    def __getitem__(self, key):
+        if key[0] in self.dict:
+            if key[1] in self.dict[key[0]]:
+                if key[2] in self.dict[key[0]][key[1]]:
+                    return self.dict[key[0]][key[1]][key[2]]
+        return None
+    def iteritems(self):
+        for k1, d1 in self.dict.iteritems():
+            for k2, d2 in d1.iteritems():
+                for k3, d3 in d2.iteritems():
+                    yield (k1,k2,k3), d3
+
+
 class HexBoard(object):
     def __init__(self):
+        Face.id_ = 0
+        Node.id_ = 0
+        Edge.id_ = 0
         self.cols = {
             -3: [0, 3],
             -2: [-1, 3],
@@ -16,15 +40,198 @@ class HexBoard(object):
         }
         self.u_min = -3
         self.u_max = 3
+        self.board = TriDict()
+        self.build_board()
+        self.fill_neighbors()
 
-    def get_face(self, u, v):
-        if (u < self.u_min) or (u > self.u_max):
-            return None
+    def build_board(self):
+        for c, r_ in self.cols.items():
+            tmp = range(r_[0], r_[1]+1)
+            for r in tmp:
+                self.board[c, r, 'F'] = Face(c, r)
+                self.board[c, r, 'L'] = Node(c, r, 'L')
+                self.board[c, r, 'R'] = Node(c, r, 'R')
+                self.board[c, r, 'W'] = Edge(c, r, 'W')
+                self.board[c, r, 'N'] = Edge(c, r, 'N')
+                self.board[c, r, 'E'] = Edge(c, r, 'E')
 
-        if (v < self.cols[u][0]) or (v > self.cols[u][1]):
-            return None
+    def fill_neighbors(self):
+        for k, obj in self.board.iteritems():
+            if type(obj) == Face:
+                nodes = self.get_nodes_from_face(k[0], k[1])
+                for n in nodes:
+                    obj.add_node(n)
+                edges = self.get_edges_from_face(k[0], k[1])
+                for e in edges:
+                    obj.add_edge(e)
+                faces = self.get_faces_from_face(k[0], k[1])
+                for f in faces:
+                    obj.add_face(f)
+            if type(obj) == Edge:
+                nodes = self.get_nodes_from_edge(k[0], k[1], k[2])
+                for n in nodes:
+                    obj.add_node(n)
+                edges = self.get_edges_from_edge(k[0], k[1], k[2])
+                for e in edges:
+                    obj.add_edge(e)
+                faces = self.get_faces_from_edge(k[0], k[1], k[2])
+                for f in faces:
+                    obj.add_face(f)
+            if type(obj) == Node:
+                nodes = self.get_nodes_from_node(k[0], k[1], k[2])
+                for n in nodes:
+                    obj.add_node(n)
+                edges = self.get_edges_from_node(k[0], k[1], k[2])
+                for e in edges:
+                    obj.add_edge(e)
+                faces = self.get_faces_from_node(k[0], k[1], k[2])
+                for f in faces:
+                    obj.add_face(f)
 
-        return 'Face'
+    def get_nodes_from_face(self, u, v):
+        bd = self.board
+        out = [
+            bd[u, v, 'L'], bd[u, v, 'R'],
+            bd[u+1, v, 'R'], bd[u-1, v, 'L'],
+            bd[u+1, v-1, 'R'], bd[u-1, v+1, 'L']
+        ]
+
+        return filter(lambda x: x is not None, out)
+
+    def get_edges_from_face(self, u, v):
+        bd = self.board
+        out = [
+            bd[u, v, 'W'], bd[u, v, 'N'], bd[u, v, 'E'],
+            bd[u+1, v-1, 'E'], bd[u, v-1, 'N'], bd[u-1, v, 'W'],
+        ]
+
+        return filter(lambda x: x is not None, out)
+
+    def get_faces_from_face(self, u, v):
+        bd = self.board
+        out = [
+            bd[u-1, v, 'F'], bd[u+1, v, 'F'],
+            bd[u, v-1, 'F'], bd[u, v+1, 'F'],
+            bd[u-1, v+1, 'F'], bd[u+1, v-1, 'F']
+        ]
+
+        return filter(lambda x: x is not None, out)
+
+    def get_nodes_from_node(self, u, v, lr):
+        bd = self.board
+        if lr == 'R':
+            out = [
+                bd[u-1, v, 'L'],
+                bd[u-1, v+1, 'L'],
+                bd[u-2, v+1, 'L'],
+            ]
+        else:
+            out = [
+                bd[u+1, v, 'R'],
+                bd[u+1, v-1, 'R'],
+                bd[u+2, v-1, 'R'],
+            ]
+
+        return filter(lambda x: x is not None, out)
+
+    def get_edges_from_node(self, u, v, lr):
+        bd = self.board
+        if lr == 'R':
+            out = [
+                bd[u, v, 'E'],
+                bd[u-1, v, 'W'],
+                bd[u-1, v, 'N'],
+            ]
+        else:
+            out = [
+                bd[u+1, v-1, 'E'],
+                bd[u+1, v-1, 'N'],
+                bd[u, v, 'W'],
+            ]
+
+        return filter(lambda x: x is not None, out)
+
+    def get_faces_from_node(self, u, v, lr):
+        bd = self.board
+        if lr == 'R':
+            out = [
+                bd[u, v, 'F'],
+                bd[u-1, v, 'F'],
+                bd[u-1, v+1, 'F'],
+            ]
+        else:
+            out = [
+                bd[u, v, 'F'],
+                bd[u+1, v-1, 'F'],
+                bd[u+1, v, 'F'],
+            ]
+
+        return filter(lambda x: x is not None, out)
+
+    def get_nodes_from_edge(self, u, v, wne):
+        bd = self.board
+        if wne == 'W':
+            out = [
+                bd[u, v, 'L'],
+                bd[u+1, v, 'R'],
+            ]
+        elif wne == 'N':
+            out = [
+                bd[u+1, v, 'R'],
+                bd[u-1, v+1, 'L'],
+            ]
+        else:
+            out = [
+                bd[u-1, v+1, 'L'],
+                bd[u, v, 'R'],
+            ]
+
+        return filter(lambda x: x is not None, out)
+
+    def get_edges_from_edge(self, u, v, wne):
+        bd = self.board
+        if wne == 'W':
+            out = [
+                bd[u+1, v-1, 'E'],
+                bd[u+1, v-1, 'N'],
+                bd[u, v, 'N'],
+                bd[u+1, v, 'E'],
+            ]
+        elif wne == 'N':
+            out = [
+                bd[u, v, 'W'],
+                bd[u, v, 'E'],
+                bd[u-1, v+1, 'W'],
+                bd[u+1, v, 'E'],
+            ]
+        else:
+            out = [
+                bd[u, v, 'N'],
+                bd[u-1, v+1, 'W'],
+                bd[u-1, v, 'W'],
+                bd[u-1, v, 'N'],
+            ]
+        return filter(lambda x: x is not None, out)
+
+    def get_faces_from_edge(self, u, v, wne):
+        bd = self.board
+        if wne == 'W':
+            out = [
+                bd[u, v, 'F'],
+                bd[u+1, v, 'F'],
+            ]
+        elif wne == 'N':
+            out = [
+                bd[u, v, 'F'],
+                bd[u, v+1, 'F'],
+            ]
+        else:
+            out = [
+                bd[u, v, 'F'],
+                bd[u-1, v+1, 'F'],
+            ]
+        return filter(lambda x: x is not None, out)
+
 
 class Board(object):
     """docstring for Board"""
@@ -329,6 +536,6 @@ class Board(object):
 if __name__ == "__main__":
     # bd = Board()
     hb = HexBoard()
-    print hb.get_face(0,0)
-    print hb.get_face(-3,3)
-    print hb.get_face(-3,-3)
+    # ?print hb.get_face(0,0)
+    # print hb.get_face(-3,3)
+    # print hb.get_face(-3,-3)

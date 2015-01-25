@@ -1,10 +1,13 @@
 class Node(object):
     """docstring for Node"""
     id_ = 0
-    def __init__(self):
+    def __init__(self, c, r, lr):
         self.id = Node.id_
         Node.id_ += 1
 
+        self.c = c
+        self.r = r
+        self.lr = lr
         self.node_neighbors = []
         self.edge_neighbors = []
         self.face_neighbors = []
@@ -23,6 +26,10 @@ class Node(object):
     def add_node(self, node):
         if node != self and node not in self.node_neighbors:
             self.node_neighbors.append(node)
+
+    def add_edge(self, edge):
+        if edge not in self.edge_neighbors:
+            self.edge_neighbors.append(edge)
 
     def set_building(self, building_type):
         self.building_type = building_type
@@ -43,4 +50,4 @@ class Node(object):
         return self.face_neighbors
 
     def __repr__(self):
-        return "<Node: %s>" % self.id    
+        return "<N%0i: %s,%s,%s>" % (self.id, self.c, self.r, self.lr)
